@@ -62,8 +62,17 @@ are meant to be run in order within one R session rather than as fully
 independent, standalone scripts — the split is for readability and review,
 not for isolated execution.
 
+## Authors
+
+R pipeline in this repository written by **Lucas Anderson**.
+
+Paper co-authored with Alexander Bigloo, Mahder Wehabe, and Tristan Cullen (Python
+analysis), from "An Analysis of the Association of Climate Variables and the Rate
+of New Dengue Cases in Bangladesh with a Future Outlook with Respect to Climate
+Change."
+
 ## Background
 
-Developed as part of a applied time series analysis research collaboration applying SSA/MSSA
+Developed as part of an applied time series analysis research collaboration applying SSA/MSSA
 time series decomposition to infectious disease surveillance, advised by Dr. Kimihiro
 Noguchi (Western Washington University).
