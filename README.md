@@ -64,12 +64,12 @@ not for isolated execution.
 
 ## Authors
 
-R pipeline in this repository written by **Lucas Anderson**.
+R pipeline in this repository written by **Lucas Anderson**, developed as part of
+a research collaboration with Alexander Bigloo, Mahder Wehabe, and Tristan Cullen.
+Thank you to all three for the work and discussion that shaped the paper.
 
-Paper co-authored with Alexander Bigloo, Mahder Wehabe, and Tristan Cullen (Python
-analysis), from "An Analysis of the Association of Climate Variables and the Rate
-of New Dengue Cases in Bangladesh with a Future Outlook with Respect to Climate
-Change."
+From "An Analysis of the Association of Climate Variables and the Rate of New
+Dengue Cases in Bangladesh with a Future Outlook with Respect to Climate Change."
 
 ## Background
 
