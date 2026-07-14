@@ -23,7 +23,7 @@ Spectrum Analysis (SSA/MSSA) decomposition with SARIMAX and VAR forecasting mode
 
 ```
 .
-├── main.R                              # Sources all modules in sequence
+├── main.R                              # Sources all R modules in sequence
 ├── R/
 │   ├── 00_setup_and_data_prep.R        # Libraries, data import, log stabilization
 │   ├── 01_univariate_ssa.R             # 1D-SSA & Toeplitz-SSA (monthly + daily)
@@ -34,6 +34,13 @@ Spectrum Analysis (SSA/MSSA) decomposition with SARIMAX and VAR forecasting mode
 │   ├── 06_model_evaluation.R           # RMSE comparison table (all models)
 │   ├── 07_forecasting.R                # Multi-horizon forecasts + plots
 │   └── 08_var_analysis.R               # VAR, IRFs, FEVD
+├── python/
+│   ├── main.py                         # Runs all python modules in sequence
+│   ├── 00_setup_and_data_prep.py       # Data import, cleaning, daily→monthly aggregation
+│   ├── 01_baseline_sarimax.py          # SARIMAX with 0–3 month climate lags + scenario forecast
+│   ├── 02_model_selection.py           # Grid search over SARIMAX orders, best-model diagnostics
+│   └── 03_eda_visualization.py         # Seasonal cycle, correlation heatmap, cross-correlation plots
+└── data/                               # Place source CSVs here (see Data section below)
 ```
 
 ## Requirements
@@ -44,29 +51,58 @@ R packages: `Rssa`, `ggplot2`, `rgl`, `fields`, `forecast`, `vars`.
 install.packages(c("Rssa", "ggplot2", "rgl", "fields", "forecast", "vars"))
 ```
 
+Python packages (see `python/requirements.txt`): `pandas`, `numpy`, `matplotlib`,
+`seaborn`, `statsmodels`, `scikit-learn`.
+
+```bash
+pip install -r python/requirements.txt
+```
+
 ## Data
 
-Expects two data objects in the environment before sourcing `main.R`:
-- `DengueAndClimateBangladesh` — monthly dengue case counts, min/max temperature, rainfall
-- `Dengue_Data` — daily dengue case counts, rainfall, temperature (from 2020)
+- `DengueAndClimateBangladesh` — monthly dengue case counts, min/max temperature, rainfall (2008–2019)
+- `Dengue_Data` — daily dengue case counts, rainfall, temperature (2020–2021)
+
+For **R**: load both as objects in your session before sourcing `main.R`.
+
+For **Python**: save the same two files as CSVs in `data/`:
+- `data/DengueAndClimateBangladesh.csv`
+- `data/Dengue Data.csv`
+
+`python/00_setup_and_data_prep.py` cleans and combines them into
+`data/dengue_climate_monthly_2008_2021.csv`, which the remaining Python
+scripts read from.
 
 ## Usage
 
+**R:**
 ```r
 # after loading DengueAndClimateBangladesh and Dengue_Data
 source("main.R")
 ```
 
-Because each script builds on objects created earlier in the pipeline, modules
+Because each script builds on objects created earlier in the pipeline, R modules
 are meant to be run in order within one R session rather than as fully
 independent, standalone scripts — the split is for readability and review,
 not for isolated execution.
 
+**Python:**
+```bash
+cd python
+python main.py
+```
+
+Same principle applies — the Python modules are numbered and meant to run in
+sequence, with `00_setup_and_data_prep.py` producing the cleaned CSV the rest
+depend on.
+
 ## Authors
 
-R pipeline in this repository written by **Lucas Anderson**, developed as part of
-a research collaboration with Alexander Bigloo, Mahder Wehabe, and Tristan Cullen.
-Thank you to all three for the work and discussion that shaped the paper.
+R pipeline in this repository written by **Lucas Anderson**. Python pipeline
+originally written by **Tristan Cullen**, restructured for this repository.
+Developed as part of a research collaboration with Alexander Bigloo and Mahder
+Wehabe as well. Thank you to all three for the work and discussion that shaped
+the paper.
 
 From "An Analysis of the Association of Climate Variables and the Rate of New
 Dengue Cases in Bangladesh with a Future Outlook with Respect to Climate Change."
