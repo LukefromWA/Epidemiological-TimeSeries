@@ -1,114 +1,249 @@
 # Dengue–Climate Forecasting: SSA / MSSA / SARIMAX Pipeline
 
-A time series analysis pipeline exploring the relationship between dengue incidence
-and climate drivers (rainfall, temperature) in Bangladesh, combining Singular
-Spectrum Analysis (SSA/MSSA) decomposition with SARIMAX and VAR forecasting models.
+A reproducible time series analysis pipeline investigating the relationship between dengue incidence and climate variability in Bangladesh using Singular Spectrum Analysis (SSA/MSSA), SARIMAX forecasting, and Vector Autoregression (VAR).
 
-## Method overview
+This repository contains the complete R and Python workflows used throughout the analysis, from data preparation through forecasting and model comparison. The project examines how rainfall and temperature influence dengue transmission while comparing classical statistical forecasting methods with hybrid SSA-based approaches.
 
-1. **Decomposition** — Univariate 1D-SSA and Toeplitz-SSA isolate trend and seasonal
-   components from log-stabilized monthly and daily dengue case series.
-2. **Climate association** — Cross-correlation analysis (CCF) and regression identify
-   the lag structure between dengue residuals and differenced rainfall/temperature.
-3. **Joint decomposition** — Multivariate SSA (MSSA) jointly decomposes dengue,
-   rainfall, and temperature to extract shared trend, seasonal, and outbreak-specific
-   components, visualized via phase-space and 3D trajectory plots.
-4. **Forecasting models** — SARIMAX models (multiple climate lag structures) and
-   hybrid MSSA+SARIMAX models are fit and compared by RMSE, then used to generate
-   12/24/36-month-ahead forecasts.
-5. **Structural analysis** — A VAR model with impulse-response functions and forecast
-   error variance decomposition characterizes dynamic climate → dengue relationships.
+---
 
-## Repository structure
+# Project Overview
 
-```
+The analysis combines signal decomposition, statistical modeling, and multivariate time series methods to characterize climate-driven dengue dynamics.
+
+The workflow consists of five major stages:
+
+1. **Signal decomposition** using 1D-SSA, Toeplitz-SSA, and Multichannel SSA (MSSA).
+2. **Climate association analysis** to identify lagged relationships between climate variables and dengue incidence.
+3. **Forecast model construction** using SARIMAX models with multiple climate lag structures.
+4. **Hybrid MSSA + SARIMAX forecasting** to compare decomposition-assisted forecasting against conventional approaches.
+5. **Dynamic systems analysis** using Vector Autoregression (VAR), impulse response functions, and forecast error variance decomposition.
+
+---
+
+# Repository Structure
+
+```text
 .
-├── main.R                              # Sources all R modules in sequence
+├── main.R                              # Runs the complete R analysis pipeline
 ├── R/
-│   ├── 00_setup_and_data_prep.R        # Libraries, data import, log stabilization
-│   ├── 01_univariate_ssa.R             # 1D-SSA & Toeplitz-SSA (monthly + daily)
-│   ├── 02_climate_correlation_analysis.R  # CCF, max-lag detection, regressions
-│   ├── 03_mssa_multivariate.R          # Joint MSSA (dengue + rain + temp)
-│   ├── 04_sarimax_models.R             # SARIMAX at 0/1/1.5/2-month climate lags
-│   ├── 05_hybrid_mssa_sarimax.R        # SARIMAX on MSSA-derived residuals
-│   ├── 06_model_evaluation.R           # RMSE comparison table (all models)
-│   ├── 07_forecasting.R                # Multi-horizon forecasts + plots
-│   └── 08_var_analysis.R               # VAR, IRFs, FEVD
+│   ├── 00_setup_and_data_prep.R
+│   ├── 01_univariate_ssa.R
+│   ├── 02_climate_correlation_analysis.R
+│   ├── 03_mssa_multivariate.R
+│   ├── 04_sarimax_models.R
+│   ├── 05_hybrid_mssa_sarimax.R
+│   ├── 06_model_evaluation.R
+│   ├── 07_forecasting.R
+│   └── 08_var_analysis.R
+│
 ├── python/
-│   ├── main.py                         # Runs all python modules in sequence
-│   ├── 00_setup_and_data_prep.py       # Data import, cleaning, daily→monthly aggregation
-│   ├── 01_baseline_sarimax.py          # SARIMAX with 0–3 month climate lags + scenario forecast
-│   ├── 02_model_selection.py           # Grid search over SARIMAX orders, best-model diagnostics
-│   └── 03_eda_visualization.py         # Seasonal cycle, correlation heatmap, cross-correlation plots
-└── data/                               # Place source CSVs here (see Data section below)
+│   ├── main.py
+│   ├── 00_setup_and_data_prep.py
+│   ├── 01_baseline_sarimax.py
+│   ├── 02_model_selection.py
+│   └── 03_eda_visualization.py
+│
+└── data/
+    └── Source datasets
 ```
 
-## Requirements
+---
 
-R packages: `Rssa`, `ggplot2`, `rgl`, `fields`, `forecast`, `vars`.
+# Analysis Workflow
+
+## 1. Data Preparation
+
+The R and Python workflows begin by importing and cleaning the monthly and daily dengue surveillance datasets. Daily observations are aggregated to monthly resolution where required and transformed for downstream analyses.
+
+---
+
+## 2. Univariate SSA
+
+One-dimensional SSA and Toeplitz SSA are used to decompose dengue incidence into trend, seasonal, and residual components.
+
+These decompositions provide a denoised representation of epidemic dynamics before introducing climate variables.
+
+---
+
+## 3. Climate Association Analysis
+
+Cross-correlation functions (CCF) and regression models are used to identify lagged relationships between rainfall, temperature, and dengue incidence.
+
+Climate variables are differenced where appropriate before evaluating delayed associations.
+
+---
+
+## 4. Multichannel SSA (MSSA)
+
+MSSA jointly decomposes dengue incidence, rainfall, and temperature into shared temporal components.
+
+The analysis includes
+
+- Common trend extraction
+- Seasonal decomposition
+- Phase-space visualization
+- Three-dimensional trajectory plots
+
+to investigate shared climate–disease dynamics.
+
+---
+
+## 5. Forecasting Models
+
+Several forecasting approaches are compared throughout the analysis.
+
+These include
+
+- SARIMAX
+- SARIMAX with multiple climate lag structures
+- Hybrid MSSA + SARIMAX
+
+Forecasts are generated over multiple forecasting horizons and compared using RMSE.
+
+---
+
+## 6. Structural Time Series Analysis
+
+Vector Autoregression (VAR) models are fit to characterize interactions between dengue incidence, rainfall, and temperature.
+
+Additional analyses include
+
+- Impulse Response Functions (IRFs)
+- Forecast Error Variance Decomposition (FEVD)
+
+to examine dynamic climate forcing.
+
+---
+
+# Requirements
+
+## R
+
+Required packages
 
 ```r
-install.packages(c("Rssa", "ggplot2", "rgl", "fields", "forecast", "vars"))
+install.packages(c(
+  "Rssa",
+  "ggplot2",
+  "rgl",
+  "fields",
+  "forecast",
+  "vars"
+))
 ```
 
-Python packages (see `python/requirements.txt`): `pandas`, `numpy`, `matplotlib`,
-`seaborn`, `statsmodels`, `scikit-learn`.
+## Python
+
+Install the required packages with
 
 ```bash
 pip install -r python/requirements.txt
 ```
 
-## Data
+The Python workflow uses
 
-- `DengueAndClimateBangladesh` — monthly dengue case counts, min/max temperature, rainfall (2008–2019)
-- `Dengue_Data` — daily dengue case counts, rainfall, temperature (2020–2021)
+- pandas
+- numpy
+- matplotlib
+- seaborn
+- statsmodels
+- scikit-learn
 
-For **R**: load both as objects in your session before sourcing `main.R`.
+---
 
-For **Python**: save the same two files as CSVs in `data/`:
-- `data/DengueAndClimateBangladesh.csv`
-- `data/Dengue Data.csv`
+# Data
 
-`python/00_setup_and_data_prep.py` cleans and combines them into
-`data/dengue_climate_monthly_2008_2021.csv`, which the remaining Python
-scripts read from.
+The analysis uses two surveillance datasets.
 
-## Usage
+### Monthly Dataset (2008–2019)
 
-**R:**
+- Dengue incidence
+- Rainfall
+- Minimum temperature
+- Maximum temperature
+
+### Daily Dataset (2020–2021)
+
+- Dengue incidence
+- Rainfall
+- Temperature
+
+### R
+
+Load both datasets into your R environment before running
+
 ```r
-# after loading DengueAndClimateBangladesh and Dengue_Data
 source("main.R")
 ```
 
-Because each script builds on objects created earlier in the pipeline, R modules
-are meant to be run in order within one R session rather than as fully
-independent, standalone scripts — the split is for readability and review,
-not for isolated execution.
+### Python
 
-**Python:**
+Place both CSV files inside
+
+```text
+data/
+├── DengueAndClimateBangladesh.csv
+└── Dengue Data.csv
+```
+
+The preprocessing script produces
+
+```text
+data/dengue_climate_monthly_2008_2021.csv
+```
+
+which is used by the remaining Python modules.
+
+---
+
+# Running the Pipeline
+
+## R
+
+```r
+source("main.R")
+```
+
+The R scripts are intended to run sequentially within a single session since each module builds on objects created by previous steps.
+
+## Python
+
 ```bash
 cd python
 python main.py
 ```
 
-Same principle applies — the Python modules are numbered and meant to run in
-sequence, with `00_setup_and_data_prep.py` producing the cleaned CSV the rest
-depend on.
+The Python modules are also designed to run sequentially through `main.py`.
 
-## Authors
+---
 
-R pipeline in this repository written by **Lucas Anderson**. Python pipeline
-originally written by **Tristan Cullen**, restructured for this repository.
-Developed as part of a research collaboration with Alexander Bigloo and Mahder
-Wehabe as well. Thank you to all three for the work and discussion that shaped
-the paper.
+# Authors
 
-From "An Analysis of the Association of Climate Variables and the Rate of New
-Dengue Cases in Bangladesh with a Future Outlook with Respect to Climate Change."
+This repository contains the complete reproducible analysis pipeline developed as part of our applied time series analysis project.
 
-## Background
+### R Pipeline
 
-Developed as part of an applied time series analysis research collaboration applying SSA/MSSA
-time series decomposition to infectious disease surveillance, advised by Dr. Kimihiro
-Noguchi (Western Washington University).
+**Lucas Anderson**
+
+### Python Pipeline
+
+**Tristan Cullen**
+
+The Python code has been modularized and refactored for this repository while preserving its original functionality and attribution.
+
+Research collaboration with
+
+- Lucas Anderson
+- Tristan Cullen
+- Alexander Bigloo
+- Mahder Wehabe
+
+Thank you to everyone involved for their contributions to the project and manuscript.
+
+---
+
+# Background
+
+Developed as part of an applied time series analysis research project at **Western Washington University** under the supervision of **Dr. Kimihiro Noguchi**.
+
+The project investigates the relationship between climate variability and dengue transmission using Singular Spectrum Analysis (SSA/MSSA), multivariate time series methods, and statistical forecasting. This repository provides the complete reproducible workflow used throughout the analysis.
